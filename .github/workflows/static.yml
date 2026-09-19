@@ -3,8 +3,6 @@ name: Dev Test Prod CI/CD
 on:
   push:
     branches:
-      - dev
-      - test
       - prod
 
   workflow_dispatch:
@@ -18,7 +16,6 @@ jobs:
 
   dev:
     name: Dev Stage
-    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +28,7 @@ jobs:
 
   test:
     name: Test Stage
-    if: github.ref == 'refs/heads/test'
+    needs: dev
     runs-on: ubuntu-latest
 
     steps:
@@ -44,7 +41,7 @@ jobs:
 
   prod:
     name: Production Stage
-    if: github.ref == 'refs/heads/prod'
+    needs: test
     runs-on: ubuntu-latest
 
     environment:
