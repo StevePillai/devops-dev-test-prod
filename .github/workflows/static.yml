@@ -1,0 +1,71 @@
+name: Dev Test Prod CI/CD
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+      - prod
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+
+  dev:
+    name: Dev Stage
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Dev Bash Command
+        run: echo "Hello Dev"
+
+
+  test:
+    name: Test Stage
+    if: github.ref == 'refs/heads/test'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Test Bash Command
+        run: echo "Hello Test"
+
+
+  prod:
+    name: Production Stage
+    if: github.ref == 'refs/heads/prod'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Prod Bash Command
+        run: echo "Hello Prod"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
